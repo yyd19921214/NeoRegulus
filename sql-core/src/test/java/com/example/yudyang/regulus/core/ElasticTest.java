@@ -7,7 +7,7 @@ import org.junit.Test;
 public class ElasticTest
 {
     @Test
-    public void parse2(){
+    public void parse1(){
         long now=System.currentTimeMillis();
         String sql="select name,age from student where age>18";
         ElasticSql2DslParser parser=new ElasticSql2DslParser();

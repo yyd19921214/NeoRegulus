@@ -126,4 +126,40 @@ public class ElasticSqlParseResult {
             throw new RuntimeException("Elasticsearch Dsl解析出错!!!");
         }
     }
+
+    public int getFrom() {
+        return from;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public Set<String> getHighlighter() {
+        return highlighter;
+    }
+
+    public List<String> getOrderBy() {
+        return orderBy;
+    }
+
+    public List<String> getRoutingBy() {
+        return routingBy;
+    }
+
+    public List<AggregationBuilder> getGroupBy() {
+        return groupBy;
+    }
+
+    public String getDistinctName() {
+        return distinctName;
+    }
+
+    public QueryBuilder getWhereCondition() {
+        return whereCondition;
+    }
+
+    public void setWhereCondition(QueryBuilder whereCondition) {
+        this.whereCondition = whereCondition;
+    }
 }
