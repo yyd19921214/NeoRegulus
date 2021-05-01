@@ -53,7 +53,7 @@ public class BooleanExpParser {
             } else if (tokenType == OR || tokenType == BOOLOR) {
                 sqlBoolOperator = SqlBoolOperator.OR;
             } else {
-                // case: name='jack' salary>1000;
+                // case: name='jack'; salary>1000;
                 AtomicQuery atomicQuery = binaryQueryParser.parseExpression(binaryContext);
                 this.highlighter.addAll(atomicQuery.getHighlighter());
                 return new SqlCondition(atomicQuery, SqlConditionType.Atomic);
