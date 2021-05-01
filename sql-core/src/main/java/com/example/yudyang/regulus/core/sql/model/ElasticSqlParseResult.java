@@ -1,6 +1,7 @@
 package com.example.yudyang.regulus.core.sql.model;
 
 import com.example.yudyang.regulus.core.sql.enumerate.SqlOperation;
+import com.example.yudyang.regulus.core.sql.utils.CoreConstants;
 import com.example.yudyang.regulus.core.sql.utils.HighlightBuilders;
 import com.example.yudyang.regulus.core.sql.utils.StringManager;
 import org.apache.commons.collections4.CollectionUtils;
@@ -9,12 +10,12 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.collapse.CollapseBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -111,5 +112,18 @@ public class ElasticSqlParseResult {
             }
         }
         return searchRequest.source(searchSourceBuilder);
+    }
+
+    public String toDsl(SearchRequest searchRequest) {
+        return searchRequest.source().toString();
+    }
+
+    public String toPrettyDsl(SearchRequest searchRequest) {
+        try {
+            Object o = CoreConstants.OBJECT_MAPPER.readValue(toDsl(searchRequest), Object.class);
+            return CoreConstants.OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(o);
+        } catch (IOException e) {
+            throw new RuntimeException("Elasticsearch Dsl解析出错!!!");
+        }
     }
 }
