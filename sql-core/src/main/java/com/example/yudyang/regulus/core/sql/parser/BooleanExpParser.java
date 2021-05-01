@@ -15,6 +15,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import static com.example.yudyang.regulus.core.antlr4.ElasticsearchParser.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,9 +24,9 @@ public class BooleanExpParser {
     public Set<String> highlighter;
     private final BinaryQueryParser binaryQueryParser;
 
-    public BooleanExpParser(Set<String> highlighter, BinaryQueryParser binaryQueryParser) {
-        this.highlighter = highlighter;
-        this.binaryQueryParser = binaryQueryParser;
+    public BooleanExpParser() {
+        this.highlighter = new HashSet<>();
+        this.binaryQueryParser = new BinaryQueryParser();
     }
 
     public QueryBuilder parseBoolQueryExpr(ExpressionContext expressionContext) {
@@ -52,7 +53,7 @@ public class BooleanExpParser {
             } else if (tokenType == OR || tokenType == BOOLOR) {
                 sqlBoolOperator = SqlBoolOperator.OR;
             } else {
-                // case: name='jack' salary>1000;
+                // case: name='jack'; salary>1000;
                 AtomicQuery atomicQuery = binaryQueryParser.parseExpression(binaryContext);
                 this.highlighter.addAll(atomicQuery.getHighlighter());
                 return new SqlCondition(atomicQuery, SqlConditionType.Atomic);

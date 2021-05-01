@@ -3,7 +3,7 @@ package com.example.yudyang.regulus.core.sql.parser;
 import org.elasticsearch.index.query.QueryBuilder;
 
 import static com.example.yudyang.regulus.core.antlr4.ElasticsearchParser.*;
-public class QueryWhereConditionParser implements QueryParser{
+public class QueryWhereConditionParser extends BooleanExpParser implements QueryParser{
     @Override
     public void parse(ElasticDslContext elasticDslContext) {
         if (elasticDslContext.getSqlContext().selectOperation()!=null){
@@ -22,7 +22,8 @@ public class QueryWhereConditionParser implements QueryParser{
 
     private void parseWhereCondition(ElasticDslContext dslContext, WhereClauseContext whereClauseContext){
         ExpressionContext expressionContext = whereClauseContext.expression();
-//        QueryBuilder queryBuilder =
-
+        QueryBuilder queryBuilder = parseBoolQueryExpr(expressionContext);
+        dslContext.getElasticSqlParseResult().setWhereCondition(queryBuilder);
+        dslContext.getElasticSqlParseResult().getHighlighter().addAll(this.highlighter);
     }
 }
