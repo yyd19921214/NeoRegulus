@@ -22,11 +22,14 @@ public class BinaryQueryParser extends AbstractQueryParser {
     private Map<SqlOperator, IConditionQueryFunc> queryBuildFuncMap;
     private ExistQueryParser existQueryParser;
     private DelegateLikeQueryParser delegateLikeQueryParser;
+    private BetweenAndQueryParser betweenAndQueryParser;
+
 
     public BinaryQueryParser() {
         this.queryBuildFuncMap = buildQueryFuncMap();
         existQueryParser = new ExistQueryParser();
         delegateLikeQueryParser = new DelegateLikeQueryParser();
+        betweenAndQueryParser = new BetweenAndQueryParser();
     }
 
     public AtomicQuery parseExpression(ExpressionContext expressionContext) {
@@ -36,8 +39,12 @@ public class BinaryQueryParser extends AbstractQueryParser {
         } else if (expressionContext instanceof LrExprContext) {
             LrExprContext lrExprContext = (LrExprContext) expressionContext;
             return parseExpression(lrExprContext.expression());
-        } else {
-            // todo handle with other cases
+        } else if (expressionContext instanceof BetweenAndContext){
+            BetweenAndContext betweenAndContext = (BetweenAndContext) expressionContext;
+            return betweenAndQueryParser.parse(betweenAndContext);
+        }else if (expressionContext instanceof InContext){
+            InContext inContext = (InContext) expressionContext;
+
         }
         return null;
     }
