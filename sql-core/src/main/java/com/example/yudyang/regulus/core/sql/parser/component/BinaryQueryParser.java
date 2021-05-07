@@ -3,6 +3,7 @@ package com.example.yudyang.regulus.core.sql.parser.component;
 import com.example.yudyang.regulus.core.sql.enumerate.SqlOperator;
 import com.example.yudyang.regulus.core.sql.model.AtomicQuery;
 import com.example.yudyang.regulus.core.sql.parser.component.like.DelegateLikeQueryParser;
+import com.example.yudyang.regulus.core.sql.parser.component.text.FullTextQueryParser;
 import com.example.yudyang.regulus.core.sql.utils.StringManager;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -23,6 +24,8 @@ public class BinaryQueryParser extends AbstractQueryParser {
     private ExistQueryParser existQueryParser;
     private DelegateLikeQueryParser delegateLikeQueryParser;
     private BetweenAndQueryParser betweenAndQueryParser;
+    private InQueryParser inQueryParser;
+    private FullTextQueryParser fullTextQueryParser;
 
 
     public BinaryQueryParser() {
@@ -30,6 +33,8 @@ public class BinaryQueryParser extends AbstractQueryParser {
         existQueryParser = new ExistQueryParser();
         delegateLikeQueryParser = new DelegateLikeQueryParser();
         betweenAndQueryParser = new BetweenAndQueryParser();
+        inQueryParser = new InQueryParser();
+        fullTextQueryParser = new FullTextQueryParser();
     }
 
     public AtomicQuery parseExpression(ExpressionContext expressionContext) {
@@ -44,8 +49,14 @@ public class BinaryQueryParser extends AbstractQueryParser {
             return betweenAndQueryParser.parse(betweenAndContext);
         }else if (expressionContext instanceof InContext){
             InContext inContext = (InContext) expressionContext;
-
+            return inQueryParser.parse(inContext);
+        }else if (expressionContext instanceof NameExprContext){
+            // todo handle with this scenario
+        }else if (expressionContext instanceof FullTextContext){
+            FullTextContext fullTextContext = (FullTextContext) expressionContext;
+            return fullTextQueryParser.parse(fullTextContext);
         }
+
         return null;
     }
 
