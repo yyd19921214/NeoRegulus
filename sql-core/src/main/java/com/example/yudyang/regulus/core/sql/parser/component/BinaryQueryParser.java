@@ -26,6 +26,8 @@ public class BinaryQueryParser extends AbstractQueryParser {
     private BetweenAndQueryParser betweenAndQueryParser;
     private InQueryParser inQueryParser;
     private FullTextQueryParser fullTextQueryParser;
+    private NestedQueryParser nestedQueryParser;
+    private JoinQueryParser joinQueryParser;
 
 
     public BinaryQueryParser() {
@@ -35,6 +37,8 @@ public class BinaryQueryParser extends AbstractQueryParser {
         betweenAndQueryParser = new BetweenAndQueryParser();
         inQueryParser = new InQueryParser();
         fullTextQueryParser = new FullTextQueryParser();
+        nestedQueryParser = new NestedQueryParser();
+        joinQueryParser = new JoinQueryParser();
     }
 
     public AtomicQuery parseExpression(ExpressionContext expressionContext) {
@@ -55,6 +59,12 @@ public class BinaryQueryParser extends AbstractQueryParser {
         }else if (expressionContext instanceof FullTextContext){
             FullTextContext fullTextContext = (FullTextContext) expressionContext;
             return fullTextQueryParser.parse(fullTextContext);
+        }else if (expressionContext instanceof NestedContext){
+            NestedContext nestedContext = (NestedContext) expressionContext;
+            return nestedQueryParser.parse(nestedContext);
+        }else if (expressionContext instanceof JoinContext){
+            JoinContext joinContext = (JoinContext) expressionContext;
+            return joinQueryParser.parse(joinContext);
         }
 
         return null;
