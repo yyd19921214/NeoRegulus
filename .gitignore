@@ -1,0 +1,42 @@
+### mvn ###
+.mvn
+mvnw*
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+raptor.xml
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+### MAC ###
+.DS_Store
+
+### project ###
+backup/
+release/
+*.log
+settings.xml
+
+### node ###
+node
+
+jira_privatekey*
+jira_publickey*

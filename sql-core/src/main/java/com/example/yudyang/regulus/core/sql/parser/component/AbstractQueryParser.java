@@ -8,12 +8,29 @@ import org.elasticsearch.index.query.QueryBuilder;
 import static com.example.yudyang.regulus.core.antlr4.ElasticsearchParser.*;
 
 public abstract class AbstractQueryParser {
-    public AtomicQuery parseCondition(ParserRuleContext expression, SqlOperator operator, Object[] params, IConditionQueryFunc conditionQueryFunc){
+    protected AtomicQuery parseCondition(ParserRuleContext expression, SqlOperator operator, Object[] params, IConditionQueryFunc conditionQueryFunc){
         if (expression instanceof NameExprContext){
             NameExprContext nameExprContext= (NameExprContext) expression;
             NameClauseContext nameContext = nameExprContext.nameClause();
             if(nameContext instanceof FieldNameContext){
                 return parseHighlighterField((FieldNameContext) nameContext,operator,params,conditionQueryFunc);
+            }
+        }
+        else if (expression instanceof BetweenAndContext){
+            BetweenAndContext betweenAndContext = (BetweenAndContext) expression;
+            NameClauseContext nameContext = betweenAndContext.expr;
+            if (nameContext instanceof FieldNameContext){
+                return parseHighlighterField((FieldNameContext) nameContext,operator,params,conditionQueryFunc);
+            }
+        }
+        else if (expression instanceof  InContext){
+            InClauseContext inClauseContext = ((InContext) expression).inClause();
+            NameClauseContext nameContext = inClauseContext.left;
+            if (nameContext instanceof FieldNameContext){
+                return parseHighlighterField((FieldNameContext) nameContext,operator,params,conditionQueryFunc);
+            }
+            else{
+                return new AtomicQuery(conditionQueryFunc.buildQuery(inClauseContext.left.getText(),operator,params));
             }
 
         }
