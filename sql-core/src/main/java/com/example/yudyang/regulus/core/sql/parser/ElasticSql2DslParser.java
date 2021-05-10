@@ -1,5 +1,6 @@
 package com.example.yudyang.regulus.core.sql.parser;
 import com.example.yudyang.regulus.core.antlr4.ElasticsearchParser;
+import com.example.yudyang.regulus.core.sql.parser.aggregate.AggregateQueryParser;
 import com.google.common.collect.ImmutableList;
 import com.example.yudyang.regulus.core.antlr4.Walker;
 import com.example.yudyang.regulus.core.sql.model.ElasticSqlParseResult;
@@ -17,6 +18,11 @@ public class ElasticSql2DslParser extends AbstractParser {
     }
 
     private static List<QueryParser> buildSqlParseChain(){
-        return ImmutableList.of(new QuerySelectFieldParser(),new QueryFromParser(),new QueryWhereConditionParser());
+        return ImmutableList.of(
+                new QuerySelectFieldParser(),
+                new QueryFromParser(),
+                new QueryWhereConditionParser(),
+                new AggregateQueryParser()
+        );
     }
 }
