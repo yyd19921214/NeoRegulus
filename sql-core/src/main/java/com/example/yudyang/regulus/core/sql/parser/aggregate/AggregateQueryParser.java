@@ -44,7 +44,6 @@ public class AggregateQueryParser implements QueryParser {
     }
 
     private AggregationBuilder parseNestedAggregationClause(NestedAggregationClauseContext nestedAggregationClauseContext){
-
         String filed = nestedAggregationClauseContext.nestedPath.getText();
         String nestedField = "nested_" + filed;
         AggregationBuilder aggregationBuilder = AggregationBuilders.nested(nestedField,filed);
@@ -94,14 +93,20 @@ public class AggregateQueryParser implements QueryParser {
                 }
             }
             else if (subAggregationClauseContext.aggregationClause().nestedAggregationClause()!=null){
-                // todo handle with suce scenario
+                AggregationBuilder nestedBuilder = parseNestedAggregationClause(subAggregationClauseContext.aggregationClause().nestedAggregationClause());
+                aggregationBuilder.subAggregation(nestedBuilder);
             }
         }
         return;
     }
 
     private List<AggregationParser> buildAggregationChain() {
-        return Lists.newArrayList(new MaxAggregationParser(), new MinAggregationParser(), new SumAggregationParser(), new TermsAggregationParser(), new CardinalityAggregationParser(), new AvgAggregationParser());
+        return Lists.newArrayList(new MaxAggregationParser()
+                , new MinAggregationParser()
+                , new SumAggregationParser()
+                , new TermsAggregationParser()
+                , new CardinalityAggregationParser()
+                , new AvgAggregationParser());
     }
 
 

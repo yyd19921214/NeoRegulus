@@ -65,4 +65,46 @@ public class ElasticTest
         System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
         System.out.println(System.currentTimeMillis()-now);
     }
+
+
+    @Test
+    public void parse7(){
+        long now=System.currentTimeMillis();
+        String sql="select * from fruit aggregate by avg(price)";
+        ElasticSql2DslParser parser=new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis()-now);
+    }
+
+    @Test
+    public void parse8(){
+        long now=System.currentTimeMillis();
+        String sql="select * from fruit aggregate by terms(name,1)>(terms(aa,2))";
+        ElasticSql2DslParser parser=new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis()-now);
+    }
+
+    @Test
+    public void parse9(){
+        long now=System.currentTimeMillis();
+        String sql="select * from fruit aggregate by [apple,terms(type,2),terms(loc,3)]";
+        ElasticSql2DslParser parser=new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis()-now);
+    }
+
+    @Test
+    public void parse10(){
+        long now=System.currentTimeMillis();
+        String sql="select * from fruit aggregate by avg(price),terms(type,2)>(terms(sub_type,3)),[apple,terms(loc,3)>(terms(sub_loc,5))]";
+        ElasticSql2DslParser parser=new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis()-now);
+    }
+
 }

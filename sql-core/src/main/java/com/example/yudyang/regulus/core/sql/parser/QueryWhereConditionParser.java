@@ -21,9 +21,11 @@ public class QueryWhereConditionParser extends BooleanExpParser implements Query
     }
 
     private void parseWhereCondition(ElasticDslContext dslContext, WhereClauseContext whereClauseContext){
-        ExpressionContext expressionContext = whereClauseContext.expression();
-        QueryBuilder queryBuilder = parseBoolQueryExpr(expressionContext);
-        dslContext.getElasticSqlParseResult().setWhereCondition(queryBuilder);
-        dslContext.getElasticSqlParseResult().getHighlighter().addAll(this.highlighter);
+        if (whereClauseContext != null) {
+            ExpressionContext expressionContext = whereClauseContext.expression();
+            QueryBuilder queryBuilder = parseBoolQueryExpr(expressionContext);
+            dslContext.getElasticSqlParseResult().setWhereCondition(queryBuilder);
+            dslContext.getElasticSqlParseResult().getHighlighter().addAll(this.highlighter);
+        }
     }
 }

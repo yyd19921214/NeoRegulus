@@ -1,6 +1,7 @@
 package com.example.yudyang.regulus.core.sql.parser;
 import com.example.yudyang.regulus.core.antlr4.ElasticsearchParser;
 import com.example.yudyang.regulus.core.sql.parser.aggregate.AggregateQueryParser;
+import com.example.yudyang.regulus.core.sql.parser.aggregate.NeoAggregateQueryParser;
 import com.google.common.collect.ImmutableList;
 import com.example.yudyang.regulus.core.antlr4.Walker;
 import com.example.yudyang.regulus.core.sql.model.ElasticSqlParseResult;
@@ -22,7 +23,7 @@ public class ElasticSql2DslParser extends AbstractParser {
                 new QuerySelectFieldParser(),
                 new QueryFromParser(),
                 new QueryWhereConditionParser(),
-                new AggregateQueryParser()
+                new NeoAggregateQueryParser()
         );
     }
 }
