@@ -107,4 +107,15 @@ public class ElasticTest
         System.out.println(System.currentTimeMillis()-now);
     }
 
+    @Test
+    public void parse11(){
+        long now=System.currentTimeMillis();
+        String sql="select max(price),min(price) from fruit group by type,origin";
+        ElasticSql2DslParser parser=new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis()-now);
+    }
+
+
 }

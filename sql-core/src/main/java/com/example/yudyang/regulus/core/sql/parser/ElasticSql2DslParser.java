@@ -23,7 +23,8 @@ public class ElasticSql2DslParser extends AbstractParser {
                 new QuerySelectFieldParser(),
                 new QueryFromParser(),
                 new QueryWhereConditionParser(),
-                new NeoAggregateQueryParser()
+                new NeoAggregateQueryParser(),
+                new QueryGroupByParser()
         );
     }
 }
