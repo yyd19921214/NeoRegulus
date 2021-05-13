@@ -6,6 +6,8 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.BucketOrder;
 
+import java.util.List;
+
 public class TermGroupByParser implements GroupByParser{
     private static final String AGG_NAME = "terms";
     @Override
@@ -26,4 +28,17 @@ public class TermGroupByParser implements GroupByParser{
     public AggregationBuilder parse(String field) {
         return AggregationBuilders.terms(field + "_terms").field(field);
     }
+
+    @Override
+    public AggregationBuilder parse(String name, List<ElasticsearchParser.IdentityContext> identityContexts) {
+        if (StringUtils.equalsIgnoreCase(AGG_NAME, name)) {
+            String field = identityContexts.get(0).getText();
+            return AggregationBuilders.terms(AGG_NAME + "_" + field).field(field);
+        }
+        return null;
+    }
+
+
+
+
 }
