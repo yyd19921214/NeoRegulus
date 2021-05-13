@@ -13,7 +13,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.collapse.CollapseBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.IOException;
 import java.util.*;
@@ -22,13 +22,13 @@ import java.util.stream.Collectors;
 public class ElasticSqlParseResult {
     private int from = 0;
     private int size = 15;
-    private Map<String,String> aliasMap=new HashMap<>(0);
+    private Map<String, String> aliasMap = new HashMap<>(0);
     private List<String> includeFields = new ArrayList<>(0);
     private List<String> excludeFields = new ArrayList<>(0);
-    private Set<String> highlighter= new HashSet<>();
+    private Set<String> highlighter = new HashSet<>();
     private SqlOperation sqlOperation = SqlOperation.SELECT;
     private List<String> indices = new ArrayList<>(0);
-    private transient List<String> orderBy = new ArrayList<>(0);
+    private Map<String, SortOrder> sortOrderMap = new HashMap<>(0);
     private List<String> routingBy = new ArrayList<>(0);
     private transient boolean trackTotalHits = false;
     private transient List<AggregationBuilder> groupBy = new ArrayList<>(0);
@@ -70,44 +70,43 @@ public class ElasticSqlParseResult {
         return indices;
     }
 
-    public SearchRequest getSearchRequest(){
-        if (searchRequest==null){
+    public SearchRequest getSearchRequest() {
+        if (searchRequest == null) {
             searchRequest = toRequest();
         }
         return searchRequest;
     }
 
-    private SearchRequest toRequest(){
+    private SearchRequest toRequest() {
         SearchRequest searchRequest = new SearchRequest();
-        List<String> idxList = indices.stream().map(s-> StringManager.removeStringSymbol(s)).collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(idxList)){
+        List<String> idxList = indices.stream().map(s -> StringManager.removeStringSymbol(s)).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(idxList)) {
             searchRequest.indices(idxList.toArray(new String[0]));
-        }
-        else{
+        } else {
             throw new IllegalArgumentException("indices should not be empty");
         }
-        searchSourceBuilder.from(Math.max(0,from));
-        searchSourceBuilder.size(Math.max(0,size));
+        searchSourceBuilder.from(Math.max(0, from));
+        searchSourceBuilder.size(Math.max(0, size));
         searchSourceBuilder.trackTotalHits(trackTotalHits);
-        if (CollectionUtils.isNotEmpty(highlighter)){
+        if (CollectionUtils.isNotEmpty(highlighter)) {
             HighlightBuilder highlightBuilder = HighlightBuilders.highlighter(highlighter);
             searchSourceBuilder.highlighter(highlightBuilder);
         }
         searchSourceBuilder.query(whereCondition);
-        if (StringUtils.isNotEmpty(distinctName)){
+        if (StringUtils.isNotEmpty(distinctName)) {
             searchSourceBuilder.collapse(new CollapseBuilder(distinctName));
         }
-        if (CollectionUtils.isNotEmpty(orderBy)){
-            for (String order:orderBy){
-                searchSourceBuilder.sort(SortBuilders.fieldSort(order));
+        if (sortOrderMap.size() > 0) {
+            for (String key : sortOrderMap.keySet()) {
+                searchSourceBuilder.sort(key, sortOrderMap.get(key));
             }
         }
-        searchSourceBuilder.fetchSource(includeFields.toArray(new String[0]),excludeFields.toArray(new String[0]));
-        if (CollectionUtils.isNotEmpty(routingBy)){
+        searchSourceBuilder.fetchSource(includeFields.toArray(new String[0]), excludeFields.toArray(new String[0]));
+        if (CollectionUtils.isNotEmpty(routingBy)) {
             searchRequest.routing(routingBy.toArray(new String[0]));
         }
         if (CollectionUtils.isNotEmpty(groupBy)) {
-            for (AggregationBuilder group:groupBy){
+            for (AggregationBuilder group : groupBy) {
                 searchSourceBuilder.aggregation(group);
             }
         }
@@ -139,9 +138,6 @@ public class ElasticSqlParseResult {
         return highlighter;
     }
 
-    public List<String> getOrderBy() {
-        return orderBy;
-    }
 
     public List<String> getRoutingBy() {
         return routingBy;
@@ -161,5 +157,9 @@ public class ElasticSqlParseResult {
 
     public void setWhereCondition(QueryBuilder whereCondition) {
         this.whereCondition = whereCondition;
+    }
+
+    public Map<String, SortOrder> getSortOrderMap() {
+        return sortOrderMap;
     }
 }

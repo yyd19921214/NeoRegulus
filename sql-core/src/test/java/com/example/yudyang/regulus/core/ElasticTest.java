@@ -147,4 +147,14 @@ public class ElasticTest {
     }
 
 
+    @Test
+    public void parse15() {
+        long now = System.currentTimeMillis();
+        String sql = "select name from employee where age>25 order by salary desc";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
 }

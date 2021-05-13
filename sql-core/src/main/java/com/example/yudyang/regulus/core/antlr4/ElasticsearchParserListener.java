@@ -1,4 +1,3 @@
-// Generated from /Users/yudyang/opendistro/iamazy/Regulus/sql-core/src/main/resources/antlr4/ElasticsearchParser.g4 by ANTLR 4.9.1
 package com.example.yudyang.regulus.core.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
