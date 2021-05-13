@@ -1,6 +1,5 @@
 package com.example.yudyang.regulus.core.sql.parser;
 
-import com.example.yudyang.regulus.core.antlr4.ElasticsearchParser;
 import com.example.yudyang.regulus.core.sql.parser.groupBy.GroupByParser;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
@@ -15,9 +14,9 @@ import static com.example.yudyang.regulus.core.antlr4.ElasticsearchParser.*;
 
 public class QueryHavingParser {
 
-    Map<String, AggregationBuilder> param = new HashMap<>();
+    private Map<String, AggregationBuilder> param = new HashMap<>();
 
-    BucketSelectorPipelineAggregationBuilder buildSingleBSBuilder(HavingClauseContext havingClauseContext) {
+    public BucketSelectorPipelineAggregationBuilder buildSingleBSBuilder(HavingClauseContext havingClauseContext) {
         HavingExpressionContext havingExpressionContext = havingClauseContext.havingExpression();
         String expStr = extractScript(havingExpressionContext);
         Map<String, String> bucketsPathsMap = new HashMap<>();
@@ -59,6 +58,10 @@ public class QueryHavingParser {
             }
         }
         return "";
+    }
+
+    public Map<String, AggregationBuilder> getParam() {
+        return param;
     }
 
 }
