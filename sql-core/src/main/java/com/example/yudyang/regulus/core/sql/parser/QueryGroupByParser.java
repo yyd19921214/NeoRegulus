@@ -24,7 +24,7 @@ public class QueryGroupByParser implements QueryParser {
         FieldListContext fieldListContext = elasticDslContext.getSqlContext().selectOperation().fieldList();
         List<AggregationBuilder> terminalAggregateNodeList = new ArrayList<>();
         if (fieldListContext.nameOperand().size() > 0) {
-            terminalAggregateNodeList = buildTerminalAggregationNode(fieldListContext.nameOperand());
+            terminalAggregateNodeList = buildTerminalAggregationNode(elasticDslContext,fieldListContext.nameOperand());
         }
         AggregationBuilder aggregationBuilder = buildAggregateBuilder(groupByClauseContext, terminalAggregateNodeList);
         elasticDslContext.getElasticSqlParseResult().getGroupBy().add(aggregationBuilder);
@@ -46,7 +46,7 @@ public class QueryGroupByParser implements QueryParser {
         // todo consider the scenario of having
     }
 
-    private List<AggregationBuilder> buildTerminalAggregationNode(List<NameOperandContext> nameOperandContexts) {
+    private List<AggregationBuilder> buildTerminalAggregationNode(ElasticDslContext elasticDslContext,List<NameOperandContext> nameOperandContexts) {
         List<AggregationBuilder> terminalAggNodeList = Lists.newArrayList();
         List<GroupByParser> groupByParsers = buildParseChain();
         for (NameOperandContext ctx : nameOperandContexts) {
@@ -56,9 +56,16 @@ public class QueryGroupByParser implements QueryParser {
                     AggregationBuilder builder = groupByParser.parse(functionNameContext);
                     if (builder != null) {
                         terminalAggNodeList.add(builder);
+                        if (ctx.alias != null) {
+                            elasticDslContext.getElasticSqlParseResult().getAliasMap().put(ctx.alias.getText(), builder.getName());
+                        }
                         break;
                     }
                 }
+
+            }
+            else {
+                // todo other scenario
             }
         }
         return terminalAggNodeList;
