@@ -3,6 +3,7 @@ package com.example.yudyang.regulus.core.sql.parser;
 import com.example.yudyang.regulus.core.sql.parser.groupBy.*;
 import com.google.common.collect.Lists;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.pipeline.BucketSelectorPipelineAggregationBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,21 @@ public class QueryGroupByParser implements QueryParser {
         for (AggregationBuilder terminalBuilder : terminalAggregateNodeList) {
             lastBuilder.subAggregation(terminalBuilder);
         }
+        if (groupByClauseContext.havingClause()!=null){
+            processWithHavingClause(groupByClauseContext.havingClause(),lastBuilder);
+        }
         AggregationBuilder root = groupByAggregateBuilds.get(0);
         for (int i = 1; i < groupByAggregateBuilds.size(); i++) {
             root = root.subAggregation(groupByAggregateBuilds.get(i));
         }
         return root;
         // todo consider the scenario of having
+    }
+
+    private void processWithHavingClause(HavingClauseContext havingClauseContext,AggregationBuilder aggregationBuilder){
+        QueryHavingParser queryHavingParser = new QueryHavingParser();
+        BucketSelectorPipelineAggregationBuilder bucketSelectorPipelineAggregationBuilder = queryHavingParser.buildSingleBSBuilder(havingClauseContext);
+        aggregationBuilder.subAggregation(bucketSelectorPipelineAggregationBuilder);
     }
 
     private List<AggregationBuilder> buildTerminalAggregationNode(ElasticDslContext elasticDslContext,List<NameOperandContext> nameOperandContexts) {
@@ -71,7 +81,7 @@ public class QueryGroupByParser implements QueryParser {
         return terminalAggNodeList;
     }
 
-    private List<GroupByParser> buildParseChain() {
+    public static List<GroupByParser> buildParseChain() {
         return Lists.newArrayList(new MinGroupByParser(), new MaxGroupByParser(), new SumGroupByParser());
     }
 

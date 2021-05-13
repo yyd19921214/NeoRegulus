@@ -116,5 +116,25 @@ public class ElasticTest {
         System.out.println(System.currentTimeMillis() - now);
     }
 
+    @Test
+    public void parse12() {
+        long now = System.currentTimeMillis();
+        String sql = "select max(price) as max_price from fruit group by type having max(price)>100";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse13() {
+        long now = System.currentTimeMillis();
+        String sql = "select max(price) as max_price from fruit group by type having max(price)>100 and max(price)<200";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
 
 }

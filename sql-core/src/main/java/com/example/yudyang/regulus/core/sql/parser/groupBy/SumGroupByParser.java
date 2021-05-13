@@ -5,6 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 
+import java.util.List;
+
 public class SumGroupByParser implements GroupByParser{
 
     private static final String AGG_NAME = "sum";
@@ -17,5 +19,14 @@ public class SumGroupByParser implements GroupByParser{
         }
         return null;
 
+    }
+
+    @Override
+    public AggregationBuilder parse(String name, List<ElasticsearchParser.IdentityContext> identityContexts) {
+        if (StringUtils.equalsIgnoreCase(AGG_NAME, name)) {
+            String field = identityContexts.get(0).getText();
+            return AggregationBuilders.sum(AGG_NAME + "_" + field).field(field);
+        }
+        return null;
     }
 }
