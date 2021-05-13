@@ -12,9 +12,12 @@ import java.util.Map;
 
 import static com.example.yudyang.regulus.core.antlr4.ElasticsearchParser.*;
 
-public class QueryHavingParser {
+public class QueryHavingParser implements QueryParser{
 
     private Map<String, AggregationBuilder> param = new HashMap<>();
+
+    @Override
+    public void parse(ElasticDslContext elasticDslContext) { }
 
     public BucketSelectorPipelineAggregationBuilder buildSingleBSBuilder(HavingClauseContext havingClauseContext) {
         HavingExpressionContext havingExpressionContext = havingClauseContext.havingExpression();
@@ -43,7 +46,6 @@ public class QueryHavingParser {
                 AggregationBuilder aggregationBuilder = parser.parse(functionExprContext.funcName.getText(), functionExprContext.collection().identity());
                 if (aggregationBuilder != null) {
                     param.put(aggregationBuilder.getName(), aggregationBuilder);
-                    System.out.println(aggregationBuilder.getName());
                     return "params." + aggregationBuilder.getName();
                 }
             }
