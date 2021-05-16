@@ -13,11 +13,11 @@ public class HasChildQueryParser implements ExpressionQueryParser<HasChildClause
     @Override
     public AtomicQuery parse(HasChildClauseContext expression) {
         String type = expression.type.getText();
-        BooleanExpParser booleanExpParser = new BooleanExpParser();
-        QueryBuilder queryBuilder = booleanExpParser.parseBoolQueryExpr(expression.query);
+        NeoBooleanExpParser booleanExpParser = new NeoBooleanExpParser();
+        QueryBuilder queryBuilder = booleanExpParser.parseExpression(expression.query);
         QueryBuilder joinBuilder = JoinQueryBuilders.hasChildQuery(type,queryBuilder, ScoreMode.Avg);
         AtomicQuery atomicQuery = new AtomicQuery(joinBuilder);
-        atomicQuery.getHighlighter().addAll(booleanExpParser.highlighter);
+        atomicQuery.getHighlighter().addAll(booleanExpParser.getHighlighters());
         return atomicQuery;
     }
 

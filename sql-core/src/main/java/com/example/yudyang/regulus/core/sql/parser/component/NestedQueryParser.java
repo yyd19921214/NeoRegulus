@@ -13,8 +13,8 @@ public class NestedQueryParser implements ExpressionQueryParser<NestedContext> {
     @Override
     public AtomicQuery parse(NestedContext expression) {
         String nestedPath = expression.nestedClause().nestedPath.getText();
-        BooleanExpParser booleanExpParser = new BooleanExpParser();
-        QueryBuilder queryBuilder = booleanExpParser.parseBoolQueryExpr(expression.nestedClause().query);
+        NeoBooleanExpParser booleanExpParser = new NeoBooleanExpParser();
+        QueryBuilder queryBuilder = booleanExpParser.parseExpression(expression.nestedClause().query);
         return new AtomicQuery(QueryBuilders.nestedQuery(nestedPath, queryBuilder, ScoreMode.Avg));
     }
 

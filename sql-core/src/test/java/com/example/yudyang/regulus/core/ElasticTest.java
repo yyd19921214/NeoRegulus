@@ -8,7 +8,7 @@ public class ElasticTest {
     @Test
     public void parse1() {
         long now = System.currentTimeMillis();
-        String sql = "select * from student where age>18";
+        String sql = "select * from student where salary>3000 or (age>18 or name='tony')";
         ElasticSql2DslParser parser = new ElasticSql2DslParser();
         ElasticSqlParseResult parseResult = parser.parse(sql);
         System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
@@ -155,6 +155,12 @@ public class ElasticTest {
         ElasticSqlParseResult parseResult = parser.parse(sql);
         System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
         System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse16() {
+//        long now = System
+
     }
 
 }
