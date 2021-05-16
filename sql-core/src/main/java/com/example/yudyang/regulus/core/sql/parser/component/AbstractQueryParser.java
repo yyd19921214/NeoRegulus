@@ -34,7 +34,13 @@ public abstract class AbstractQueryParser {
             }
 
         }
+        else if (expression instanceof LikeClauseContext){
+            LikeClauseContext likeClauseContext = (LikeClauseContext) expression;
+            NameClauseContext nameClauseContext = likeClauseContext.field;
+            return parseHighlighterField((FieldNameContext) nameClauseContext,operator,params,conditionQueryFunc );
+        }
         return null;
+//        throw new Exception("could not get right template");
     }
 
     private AtomicQuery parseHighlighterField(FieldNameContext fieldNameContext,SqlOperator operator, Object[] params,IConditionQueryFunc queryBuilder){

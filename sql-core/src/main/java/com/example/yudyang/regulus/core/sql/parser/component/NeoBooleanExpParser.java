@@ -21,24 +21,24 @@ public class NeoBooleanExpParser {
         binaryQueryParser = new BinaryQueryParser();
     }
 
-    public QueryBuilder parseExpression(ExpressionContext expressionContext){
+    public QueryBuilder parseExpression(ExpressionContext expressionContext) {
         return parseExpressionRecursively(expressionContext);
     }
 
-    private QueryBuilder parseExpressionRecursively(ExpressionContext expressionContext){
-        if (expressionContext instanceof BinaryContext){
+    private QueryBuilder parseExpressionRecursively(ExpressionContext expressionContext) {
+        if (expressionContext instanceof BinaryContext) {
             BinaryContext binaryContext = (BinaryContext) expressionContext;
             return parseBinaryContext(binaryContext);
+        } else {
+            AtomicQuery atomicQuery = binaryQueryParser.parseExpression(expressionContext);
+            this.highlighters.addAll(atomicQuery.getHighlighter());
+            return atomicQuery.getQueryBuilder();
         }
-        else {
-            AtomicQuery query = binaryQueryParser.parseExpression(expressionContext);
-            this.highlighters.addAll(query.getHighlighter());
-            return query.getQueryBuilder();
-        }
+
     }
 
-    private QueryBuilder parseBinaryContext(BinaryContext binaryContext){
-        if (binaryContext.operator.getType()==AND || binaryContext.operator.getType()==OR){
+    private QueryBuilder parseBinaryContext(BinaryContext binaryContext) {
+        if (binaryContext.operator!=null && (binaryContext.operator.getType() == AND || binaryContext.operator.getType() == OR)) {
             QueryBuilder leftQueryBuilder = parseExpressionRecursively(binaryContext.leftExpr);
             QueryBuilder rightQueryBuilder = parseExpressionRecursively(binaryContext.rightExpr);
             if (binaryContext.operator.getType() == AND) {
@@ -47,7 +47,7 @@ public class NeoBooleanExpParser {
                 return QueryBuilders.boolQuery().should(leftQueryBuilder).should(rightQueryBuilder).minimumShouldMatch(1);
             }
         } else {
-            AtomicQuery query =  binaryQueryParser.parseBinaryQuery(binaryContext);
+            AtomicQuery query = binaryQueryParser.parseBinaryQuery(binaryContext);
             this.highlighters.addAll(query.getHighlighter());
             return query.getQueryBuilder();
         }

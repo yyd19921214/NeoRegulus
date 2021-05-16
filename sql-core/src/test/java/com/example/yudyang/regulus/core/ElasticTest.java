@@ -5,10 +5,12 @@ import com.example.yudyang.regulus.core.sql.parser.ElasticSql2DslParser;
 import org.junit.Test;
 
 public class ElasticTest {
+
+    // test condition
     @Test
     public void parse1() {
         long now = System.currentTimeMillis();
-        String sql = "select * from student where salary>3000 or (age>18 or name='tony')";
+        String sql = "select * from student where salary>3000";
         ElasticSql2DslParser parser = new ElasticSql2DslParser();
         ElasticSqlParseResult parseResult = parser.parse(sql);
         System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
@@ -16,9 +18,9 @@ public class ElasticTest {
     }
 
     @Test
-    public void parse2() {
+    public void parse1_2() {
         long now = System.currentTimeMillis();
-        String sql = "select * from student where name~='jack' and age >15 or salary<2000";
+        String sql = "select * from student where (salary>3000 or age>18)";
         ElasticSql2DslParser parser = new ElasticSql2DslParser();
         ElasticSqlParseResult parseResult = parser.parse(sql);
         System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
@@ -26,9 +28,9 @@ public class ElasticTest {
     }
 
     @Test
-    public void parse3() {
+    public void parse1_3() {
         long now = System.currentTimeMillis();
-        String sql = "select name from student where name between 'A' and 'Z'";
+        String sql = "select * from student where (salary>3000 or (age>18 and loc='shanghai'))";
         ElasticSql2DslParser parser = new ElasticSql2DslParser();
         ElasticSqlParseResult parseResult = parser.parse(sql);
         System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
@@ -36,9 +38,9 @@ public class ElasticTest {
     }
 
     @Test
-    public void parse4() {
+    public void parse1_4() {
         long now = System.currentTimeMillis();
-        String sql = "select name from student where [name,name.firstName='jack' and [tag,tag.tt='A']]";
+        String sql = "select * from student where (salary>3000 and (age>18 or loc='shanghai'))";
         ElasticSql2DslParser parser = new ElasticSql2DslParser();
         ElasticSqlParseResult parseResult = parser.parse(sql);
         System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
@@ -46,7 +48,77 @@ public class ElasticTest {
     }
 
     @Test
-    public void parse5() {
+    public void parse1_5() {
+        long now = System.currentTimeMillis();
+        String sql = "select * from student where salary>3000 and age ranged in (1,18]";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse1_6() {
+        long now = System.currentTimeMillis();
+        String sql = "select * from student where gender in ('F','M')";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse1_7() {
+        long now = System.currentTimeMillis();
+        String sql = "select * from student where name FUZZY like 'tony'";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse1_8() {
+        long now = System.currentTimeMillis();
+        String sql = "select * from student where name WildCard like 'to*y'";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse1_9() {
+        long now = System.currentTimeMillis();
+        String sql = "select * from student where (firstname,lastname) ~= 'toy'";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse1_10() {
+        long now = System.currentTimeMillis();
+        String sql = "select name from student where [name,name.firstName in ('A','B') and name.age>19]";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse1_11() {
+        long now = System.currentTimeMillis();
+        String sql = "select name from student where [name,name.firstName='jack' and [tag,tag.tt='A']] and (age>18 or salary<2000)";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse1_12() {
         long now = System.currentTimeMillis();
         String sql = "select * from fruit where has_parent(vegetable,weight between 100 and 400)";
         ElasticSql2DslParser parser = new ElasticSql2DslParser();
@@ -56,7 +128,7 @@ public class ElasticTest {
     }
 
     @Test
-    public void parse6() {
+    public void parse1_13() {
         long now = System.currentTimeMillis();
         String sql = "select * from fruit where has_child(apple,price in (10,20,30))";
         ElasticSql2DslParser parser = new ElasticSql2DslParser();

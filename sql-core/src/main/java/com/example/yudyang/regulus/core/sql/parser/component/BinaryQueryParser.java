@@ -29,6 +29,9 @@ public class BinaryQueryParser extends AbstractQueryParser {
     private NestedQueryParser nestedQueryParser;
     private JoinQueryParser joinQueryParser;
 
+    private NeoBooleanExpParser neoBooleanExpParser;
+
+
 
     public BinaryQueryParser() {
         this.queryBuildFuncMap = buildQueryFuncMap();
@@ -47,7 +50,10 @@ public class BinaryQueryParser extends AbstractQueryParser {
             return parseBinaryQuery(binaryContext);
         } else if (expressionContext instanceof LrExprContext) {
             LrExprContext lrExprContext = (LrExprContext) expressionContext;
-            return parseExpression(lrExprContext.expression());
+            NeoBooleanExpParser neoBooleanExpParser = new NeoBooleanExpParser();
+            AtomicQuery atomicQuery = new AtomicQuery( neoBooleanExpParser.parseExpression(lrExprContext.expression()));
+            atomicQuery.getHighlighter().addAll(neoBooleanExpParser.getHighlighters());
+            return atomicQuery;
         } else if (expressionContext instanceof BetweenAndContext) {
             BetweenAndContext betweenAndContext = (BetweenAndContext) expressionContext;
             return betweenAndQueryParser.parse(betweenAndContext);
