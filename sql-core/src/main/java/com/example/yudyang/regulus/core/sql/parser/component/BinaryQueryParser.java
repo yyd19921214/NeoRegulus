@@ -29,6 +29,9 @@ public class BinaryQueryParser extends AbstractQueryParser {
     private NestedQueryParser nestedQueryParser;
     private JoinQueryParser joinQueryParser;
 
+    private NeoBooleanExpParser neoBooleanExpParser;
+
+
 
     public BinaryQueryParser() {
         this.queryBuildFuncMap = buildQueryFuncMap();
@@ -43,34 +46,36 @@ public class BinaryQueryParser extends AbstractQueryParser {
 
     public AtomicQuery parseExpression(ExpressionContext expressionContext) {
         if (expressionContext instanceof BinaryContext) {
-            BinaryContext binaryContext = (BinaryContext)expressionContext;
+            BinaryContext binaryContext = (BinaryContext) expressionContext;
             return parseBinaryQuery(binaryContext);
         } else if (expressionContext instanceof LrExprContext) {
             LrExprContext lrExprContext = (LrExprContext) expressionContext;
-            return parseExpression(lrExprContext.expression());
-        } else if (expressionContext instanceof BetweenAndContext){
+            NeoBooleanExpParser neoBooleanExpParser = new NeoBooleanExpParser();
+            AtomicQuery atomicQuery = new AtomicQuery( neoBooleanExpParser.parseExpression(lrExprContext.expression()));
+            atomicQuery.getHighlighter().addAll(neoBooleanExpParser.getHighlighters());
+            return atomicQuery;
+        } else if (expressionContext instanceof BetweenAndContext) {
             BetweenAndContext betweenAndContext = (BetweenAndContext) expressionContext;
             return betweenAndQueryParser.parse(betweenAndContext);
-        }else if (expressionContext instanceof InContext){
+        } else if (expressionContext instanceof InContext) {
             InContext inContext = (InContext) expressionContext;
             return inQueryParser.parse(inContext);
-        }else if (expressionContext instanceof NameExprContext){
+        } else if (expressionContext instanceof NameExprContext) {
             // todo handle with this scenario
-        }else if (expressionContext instanceof FullTextContext){
+        } else if (expressionContext instanceof FullTextContext) {
             FullTextContext fullTextContext = (FullTextContext) expressionContext;
             return fullTextQueryParser.parse(fullTextContext);
-        }else if (expressionContext instanceof NestedContext){
+        } else if (expressionContext instanceof NestedContext) {
             NestedContext nestedContext = (NestedContext) expressionContext;
             return nestedQueryParser.parse(nestedContext);
-        }else if (expressionContext instanceof JoinContext){
+        } else if (expressionContext instanceof JoinContext) {
             JoinContext joinContext = (JoinContext) expressionContext;
             return joinQueryParser.parse(joinContext);
         }
-
-        return null;
+        throw new IllegalArgumentException("unsupported expression type");
     }
 
-    private AtomicQuery parseBinaryQuery(BinaryContext binaryContext) {
+    public AtomicQuery parseBinaryQuery(BinaryContext binaryContext) {
         if (binaryContext.operator != null) {
             int operatorType = binaryContext.operator.getType();
             if (operatorType == EQ || operatorType == NE || operatorType == AEQ || operatorType == TEQ || operatorType == NAEQ

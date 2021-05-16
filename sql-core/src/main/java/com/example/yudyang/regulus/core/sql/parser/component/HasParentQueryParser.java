@@ -12,11 +12,11 @@ public class HasParentQueryParser implements ExpressionQueryParser<HasParentClau
     @Override
     public AtomicQuery parse(ElasticsearchParser.HasParentClauseContext expression) {
         String type = expression.type.getText();
-        BooleanExpParser booleanExpParser = new BooleanExpParser();
-        QueryBuilder queryBuilder = booleanExpParser.parseBoolQueryExpr(expression.query);
+        NeoBooleanExpParser booleanExpParser = new NeoBooleanExpParser();
+        QueryBuilder queryBuilder = booleanExpParser.parseExpression(expression.query);
         QueryBuilder joinBuilder = JoinQueryBuilders.hasParentQuery(type,queryBuilder, false);
         AtomicQuery atomicQuery = new AtomicQuery(joinBuilder);
-        atomicQuery.getHighlighter().addAll(booleanExpParser.highlighter);
+        atomicQuery.getHighlighter().addAll(booleanExpParser.getHighlighters());
         return atomicQuery;
     }
 

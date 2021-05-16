@@ -10,7 +10,13 @@ public class DelegateLikeQueryParser {
         switch (idx){
             default:
             case FUZZY:
+                return new FuzzyLikeQueryParser().parse(likeClauseContext);
+            case PREFIX:
                 return new PrefixLikeQueryParser().parse(likeClauseContext);
+            case WILDCARD:
+                return new WildCardLikeQueryParser().parse(likeClauseContext);
+            case REGEXP:
+                return new RegexpLikeQueryParser().parse(likeClauseContext);
         }
 
     }

@@ -1,3 +1,4 @@
+// Generated from /Users/yudyang/opendistro/iamazy/Regulus/sql-core/src/main/resources/antlr4/ElasticsearchLexer.g4 by ANTLR 4.9.1
 package antlr4;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;

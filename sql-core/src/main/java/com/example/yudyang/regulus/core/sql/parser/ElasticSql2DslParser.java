@@ -20,7 +20,7 @@ public class ElasticSql2DslParser extends AbstractParser {
         return ImmutableList.of(
                 new QuerySelectFieldParser(),
                 new QueryFromParser(),
-                new QueryWhereConditionParser(),
+                new NeoWhereConditionParser(),
                 new NeoAggregateQueryParser(),
                 new QueryGroupByParser(),
                 new InOrderParser()
