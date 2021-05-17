@@ -8,9 +8,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.index.reindex.ReindexRequest;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.collapse.CollapseBuilder;
@@ -39,6 +42,10 @@ public class ElasticSqlParseResult {
     private transient SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
     private transient GetMappingsRequest getMappingsRequest;
     private transient GetFieldMappingsRequest getFieldMappingsRequest;
+    private transient DeleteRequest deleteRequest;
+    private transient DeleteByQueryRequest deleteByQueryRequest;
+    private transient ReindexRequest reindexRequest;
+
 
     private transient SearchRequest searchRequest;
 
@@ -173,5 +180,37 @@ public class ElasticSqlParseResult {
 
     public void setGetFieldMappingsRequest(GetFieldMappingsRequest getFieldMappingsRequest) {
         this.getFieldMappingsRequest = getFieldMappingsRequest;
+    }
+
+    public void setDeleteRequest(DeleteRequest deleteRequest) {
+        this.deleteRequest = deleteRequest;
+    }
+
+    public GetMappingsRequest getGetMappingsRequest() {
+        return getMappingsRequest;
+    }
+
+    public GetFieldMappingsRequest getGetFieldMappingsRequest() {
+        return getFieldMappingsRequest;
+    }
+
+    public DeleteRequest getDeleteRequest() {
+        return deleteRequest;
+    }
+
+    public DeleteByQueryRequest getDeleteByQueryRequest() {
+        return deleteByQueryRequest;
+    }
+
+    public void setDeleteByQueryRequest(DeleteByQueryRequest deleteByQueryRequest) {
+        this.deleteByQueryRequest = deleteByQueryRequest;
+    }
+
+    public ReindexRequest getReindexRequest() {
+        return reindexRequest;
+    }
+
+    public void setReindexRequest(ReindexRequest reindexRequest) {
+        this.reindexRequest = reindexRequest;
     }
 }

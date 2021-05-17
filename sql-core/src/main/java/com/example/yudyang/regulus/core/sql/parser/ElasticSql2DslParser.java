@@ -1,6 +1,8 @@
 package com.example.yudyang.regulus.core.sql.parser;
 import com.example.yudyang.regulus.core.antlr4.ElasticsearchParser;
+import com.example.yudyang.regulus.core.sql.parser.delete.QueryDeleteParser;
 import com.example.yudyang.regulus.core.sql.parser.desc.QueryDescParser;
+import com.example.yudyang.regulus.core.sql.parser.reindex.ReindexParser;
 import com.google.common.collect.ImmutableList;
 import com.example.yudyang.regulus.core.antlr4.Walker;
 import com.example.yudyang.regulus.core.sql.model.ElasticSqlParseResult;
@@ -26,7 +28,9 @@ public class ElasticSql2DslParser extends AbstractParser {
                 new QueryGroupByParser(),
                 new InOrderParser(),
 
-                new QueryDescParser()
+                new QueryDescParser(),
+                new QueryDeleteParser(),
+                new ReindexParser()
         );
     }
 }
