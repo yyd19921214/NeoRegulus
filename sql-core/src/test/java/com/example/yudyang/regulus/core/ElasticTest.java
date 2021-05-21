@@ -97,6 +97,8 @@ public class ElasticTest {
         System.out.println(System.currentTimeMillis() - now);
     }
 
+
+
     @Test
     public void parse1_10() {
         long now = System.currentTimeMillis();
@@ -131,6 +133,16 @@ public class ElasticTest {
     public void parse1_13() {
         long now = System.currentTimeMillis();
         String sql = "select * from fruit where has_child(apple,price in (10,20,30))";
+        ElasticSql2DslParser parser = new ElasticSql2DslParser();
+        ElasticSqlParseResult parseResult = parser.parse(sql);
+        System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));
+        System.out.println(System.currentTimeMillis() - now);
+    }
+
+    @Test
+    public void parse1_14() {
+        long now = System.currentTimeMillis();
+        String sql = "select loc,avg(salary) from employee where age>18 group by loc";
         ElasticSql2DslParser parser = new ElasticSql2DslParser();
         ElasticSqlParseResult parseResult = parser.parse(sql);
         System.out.println(parseResult.toPrettyDsl(parseResult.getSearchRequest()));

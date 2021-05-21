@@ -84,7 +84,7 @@ public class QueryGroupByParser implements QueryParser {
     }
 
     public static List<GroupByParser> buildParseChain() {
-        return Lists.newArrayList(new MinGroupByParser(), new MaxGroupByParser(), new SumGroupByParser());
+        return Lists.newArrayList(new MinGroupByParser(), new MaxGroupByParser(), new SumGroupByParser(),new AvgGroupByParser());
     }
 
     // select max(salary) from employee group by province having max(age)>60
