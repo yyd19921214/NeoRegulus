@@ -6,9 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="sql-all" />
+        <module name="sql-plugin" />
         <module name="sql-jdbc" />
         <module name="sql-core" />
-        <module name="sql-plugin" />
       </profile>
     </annotationProcessing>
   </component>

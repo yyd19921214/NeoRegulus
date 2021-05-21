@@ -49,6 +49,9 @@ public class ElasticSqlParseResult {
 
     private transient SearchRequest searchRequest;
 
+    public ElasticSqlParseResult() {
+    }
+
     public Map<String, String> getAliasMap() {
         return aliasMap;
     }
