@@ -3,11 +3,13 @@ package com.example.yudyang.regulus.jdbc.statement;
 import com.example.yudyang.regulus.core.sql.enumerate.SqlOperation;
 import com.example.yudyang.regulus.core.sql.model.ElasticSqlParseResult;
 import com.example.yudyang.regulus.core.sql.parser.ElasticSql2DslParser;
+import com.example.yudyang.regulus.core.sql.utils.CoreConstants;
 import com.example.yudyang.regulus.jdbc.connection.ElasticConnection;
 import com.example.yudyang.regulus.jdbc.driver.ElasticDriver;
 import com.example.yudyang.regulus.jdbc.elastic.JdbcResultExtractor;
 import com.example.yudyang.regulus.jdbc.elastic.JdbcSearchResponse;
 import com.example.yudyang.regulus.jdbc.resultset.ElasticResultSet;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -16,9 +18,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
-public class ElasticStatement extends AbstractStatement{
+public class ElasticStatement extends AbstractStatement {
 
     protected static Logger logger = Logger.getLogger(ElasticStatement.class);
 
@@ -33,25 +36,24 @@ public class ElasticStatement extends AbstractStatement{
 
     @Override
     protected ResultSet executeQuery(String sql, Object[] args) throws SQLException {
-        ElasticSqlParseResult parseResult = elasticSql2DslParser.parse(sql);
-//        SearchResponse response = connection.getRestHighLevelClient().search(parseResult.getSearchRequest(),RequestOptions.DEFAULT);
-
-        return null;
+        sql = prepareSQL(sql, args);
+        return executeQuery(sql);
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         ElasticSqlParseResult parseResult = elasticSql2DslParser.parse(sql);
-        if (SqlOperation.SELECT!=parseResult.getSqlOperation()){
+        if (SqlOperation.SELECT != parseResult.getSqlOperation()) {
             throw new IllegalArgumentException("only select operation supported in query method");
         }
         try {
+            checkDatabase(parseResult.getIndices());
             SearchResponse response = connection.getRestHighLevelClient().search(parseResult.getSearchRequest(), RequestOptions.DEFAULT);
             JdbcResultExtractor jdbcResultExtractor = new JdbcResultExtractor();
             JdbcSearchResponse jdbcSearchResponse = jdbcResultExtractor.parseSearchResponse(response, parseResult.getAliasMap());
-            this.resultSet = new ElasticResultSet(this,jdbcSearchResponse);
+            this.resultSet = new ElasticResultSet(this, jdbcSearchResponse);
         } catch (IOException e) {
-            logger.error("@executeQuery, ex info is "+e.getMessage());
+            logger.error("@executeQuery, ex info is " + e.getMessage());
         }
         return this.resultSet;
     }
@@ -98,5 +100,20 @@ public class ElasticStatement extends AbstractStatement{
     @Override
     public boolean isClosed() {
         return super.isClosed();
+    }
+
+    private String prepareSQL(String sql, Object[] args) {
+        int count = StringUtils.countMatches(sql, CoreConstants.COND);
+        assert count == args.length;
+        for (Object obj : args) {
+            sql = sql.replaceFirst("\\?", obj.toString());
+        }
+        return sql;
+    }
+
+    private void checkDatabase(List<String> indices) throws SQLException {
+        if (!connection.getDatabases().containsAll(indices)) {
+            throw new SQLException("[invalid] database queried must be contained in " + connection.getDatabases());
+        }
     }
 }
