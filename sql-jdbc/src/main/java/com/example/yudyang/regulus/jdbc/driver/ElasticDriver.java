@@ -16,6 +16,7 @@ public class ElasticDriver implements Driver {
     static {
         try {
             DriverManager.registerDriver(new ElasticDriver());
+
         }catch (SQLException sqlException){
             logger.info("register error, ex "+ ExceptionUtils.getMessage(sqlException));
         }

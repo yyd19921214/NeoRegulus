@@ -7,16 +7,16 @@ public class CoreConstants {
     public  static ObjectMapper OBJECT_MAPPER=new ObjectMapper();
 
 
-    String COMMA = ",";
-    String COLON = ":";
-    String DOLLAR = "$";
-    String MODULE = "%";
-    String STAR = "*";
-    String UNDERLINE = "_";
-    String COND = "?";
-    String DOT=".";
-    String GRAVE_ACCENT="`";
-    String UP_ARROW="^";
-    String POUND="#";
-    String DEFAULT_ES_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    public static String COMMA = ",";
+    public static String COLON = ":";
+    public static String DOLLAR = "$";
+    public static String MODULE = "%";
+    public static String STAR = "*";
+    public static String UNDERLINE = "_";
+    public static String COND = "?";
+    public static String DOT=".";
+    public static String GRAVE_ACCENT="`";
+    public static String UP_ARROW="^";
+    public static String POUND="#";
+    public static String DEFAULT_ES_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 }
