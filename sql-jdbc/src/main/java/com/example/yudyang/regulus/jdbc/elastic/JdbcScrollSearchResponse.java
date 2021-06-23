@@ -10,8 +10,6 @@ public class JdbcScrollSearchResponse extends JdbcSearchResponse{
         setAliasMap(response.getAliasMap());
         setTook(response.getTook());
         setTotal(response.getTotal());
-
-
     }
 
     public String getScrollId() {

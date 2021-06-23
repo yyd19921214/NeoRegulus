@@ -9,11 +9,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.ReindexRequest;
+import org.elasticsearch.index.reindex.UpdateByQueryRequest;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.collapse.CollapseBuilder;
@@ -45,8 +48,9 @@ public class ElasticSqlParseResult {
     private transient DeleteRequest deleteRequest;
     private transient DeleteByQueryRequest deleteByQueryRequest;
     private transient ReindexRequest reindexRequest;
-
-
+    private transient UpdateRequest updateRequest;
+    private transient UpdateByQueryRequest updateByQueryRequest;
+    private transient IndexRequest indexRequest;
     private transient SearchRequest searchRequest;
 
     public ElasticSqlParseResult() {
@@ -215,5 +219,21 @@ public class ElasticSqlParseResult {
 
     public void setReindexRequest(ReindexRequest reindexRequest) {
         this.reindexRequest = reindexRequest;
+    }
+
+    public SearchSourceBuilder getSearchSourceBuilder() {
+        return searchSourceBuilder;
+    }
+
+    public UpdateRequest getUpdateRequest() {
+        return updateRequest;
+    }
+
+    public UpdateByQueryRequest getUpdateByQueryRequest() {
+        return updateByQueryRequest;
+    }
+
+    public IndexRequest getIndexRequest() {
+        return indexRequest;
     }
 }

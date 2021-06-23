@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Objects;
 
-public class ElasticResultSet extends AbstractResultSet{
+public class ElasticResultSet extends AbstractResultSet {
 
     private JdbcSearchResponse response;
 
@@ -42,11 +42,11 @@ public class ElasticResultSet extends AbstractResultSet{
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        String fieldName=columnLabel;
-        if(this.response.getAliasMap().containsKey(columnLabel)){
-            fieldName=this.response.getAliasMap().get(fieldName);
+        String fieldName = columnLabel;
+        if (this.response.getAliasMap().containsKey(columnLabel)) {
+            fieldName = this.response.getAliasMap().get(fieldName);
         }
-        Object result = FlatMapUtils.flatGet(fieldName,this.response.getResult().get(rowCursor));
+        Object result = FlatMapUtils.flatGet(fieldName, this.response.getResult().get(rowCursor));
         Objects.requireNonNull(result);
         return result.toString();
     }
@@ -59,7 +59,7 @@ public class ElasticResultSet extends AbstractResultSet{
 
     @Override
     public Object getObject(String columnLabel) throws SQLException {
-        return FlatMapUtils.flatGet(columnLabel,this.response.getResult().get(rowCursor));
+        return FlatMapUtils.flatGet(columnLabel, this.response.getResult().get(rowCursor));
     }
 
     @Override
