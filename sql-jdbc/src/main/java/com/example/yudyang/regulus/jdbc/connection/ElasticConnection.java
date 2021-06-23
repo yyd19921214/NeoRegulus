@@ -23,7 +23,7 @@ public class ElasticConnection extends AbstractConnection{
 
     private List<String> databases;
 
-    ElasticConnection(String url, Properties properties,RestHighLevelClient client){
+    public ElasticConnection(String url, Properties properties,RestHighLevelClient client){
         super(url,properties);
         this.restHighLevelClient = client;
         String[] items = url.split("/");

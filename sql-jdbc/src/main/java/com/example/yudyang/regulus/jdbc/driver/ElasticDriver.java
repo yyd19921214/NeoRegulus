@@ -1,10 +1,13 @@
 package com.example.yudyang.regulus.jdbc.driver;
 
-import com.example.yudyang.regulus.core.sql.parser.BasicParser;
+import com.example.yudyang.regulus.jdbc.client.ElasticClientManager;
+import com.example.yudyang.regulus.jdbc.client.ElasticClientProvider;
+import com.example.yudyang.regulus.jdbc.connection.ElasticConnection;
 import com.example.yudyang.regulus.jdbc.constant.JdbcConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.sql.*;
 import java.util.Properties;
@@ -13,12 +16,16 @@ public class ElasticDriver implements Driver {
 
     protected static Logger logger = Logger.getLogger(ElasticDriver.class);
 
+    private RestHighLevelClient restHighLevelClient;
+    private ElasticClientProvider elasticClientProvider;
+
     static {
         try {
             DriverManager.registerDriver(new ElasticDriver());
-
+            System.out.println("register good");
         }catch (SQLException sqlException){
             logger.info("register error, ex "+ ExceptionUtils.getMessage(sqlException));
+            System.out.println(sqlException);
         }
     }
 
@@ -28,7 +35,21 @@ public class ElasticDriver implements Driver {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        return null;
+        synchronized (ElasticDriver.class){
+            if (restHighLevelClient!=null){
+                return new ElasticConnection(url,info,restHighLevelClient);
+            }
+            if (elasticClientProvider==null){
+                elasticClientProvider = new ElasticClientManager();
+            }
+            String username=info.getOrDefault("user","").toString();
+            String password=info.getOrDefault("password","").toString();
+            restHighLevelClient = elasticClientProvider.fromUrl(url,username,password);
+            if (restHighLevelClient==null){
+                throw new SQLException(String.format("Failed to create elastic client for url[%s]", url));
+            }
+        }
+        return new ElasticConnection(url,info,restHighLevelClient);
     }
 
     @Override

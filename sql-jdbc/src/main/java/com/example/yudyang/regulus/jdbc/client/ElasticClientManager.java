@@ -55,7 +55,7 @@ public class ElasticClientManager implements ElasticClientProvider{
     }
 
     private Map<String,Object> parseUrlParam(String url){
-        if (StringUtils.containsIgnoreCase(url, JdbcConstants.ELASTIC_DRIVER_PREFIX)) {
+        if (!StringUtils.containsIgnoreCase(url, JdbcConstants.ELASTIC_DRIVER_PREFIX)) {
             throw new RuntimeException("[" + url + "] is an invalid elasticsearch jdbc url");
         }
         if (url.contains(JdbcConstants.COND)) {
